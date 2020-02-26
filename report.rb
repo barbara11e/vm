@@ -2,9 +2,7 @@ require_relative 'Vm'
 
 class Report 
   def self.get_prices()
-    prices = {}
-    CSV.read('prices.csv').each { |p| prices[p[0]] = p[1].to_i }
-    return prices
+    CSV.read('data/prices.csv', converters: %i[numeric]).to_h
   end
 
   def self.get_vm_prices
@@ -25,13 +23,13 @@ class Report
   def self.most_expensive(n)
     # выводит n самых дорогих ВМ
     vm_prices = get_vm_prices
-    return Hash[vm_prices.sort_by { |k,v| -v }[0...n]]
+    return vm_prices.sort_by { |k,v| -v }[0...n].to_h
   end
 
   def self.cheapest(n)
     # выводит n самых дешевых ВМ
     vm_prices = get_vm_prices
-    return Hash[vm_prices.sort_by { |k,v| v }[0...n]]
+    return vm_prices.sort_by { |k,v| v }[0...n].to_h
   end
 
   def self.highest_volume(n)
@@ -42,26 +40,32 @@ class Report
       vm_volumes[vm] = vm_volume
       vm_volumes[vm] += vm.additional_volume
     end
-    return Hash[vm_volumes.sort_by { |k,v| -v }[0...n]]
+    return vm_volumes.sort_by { |k,v| -v }[0...n].to_h
   end
 
   def self.most_added_hdd(n, hdd_type: nil)
-    # Выводит n ВМ у которых подключено больше всего дополнительных дисков (по количеству) (с учетом типа диска если параметр hdd_type указан)
-
-  end
-
-  def self.most_added_capacity(n)
-    # Отчет который выводит n ВМ у которых подключено больше всего дополнительных дисков (по объему) (с учетом типа диска если параметр hdd_type указан)
+    # Выводит n ВМ у которых подключено больше всего 
+    # дополнительных дисков (по количеству)
     vm_volumes = {}
     Vm.all.each do |vm|
-      vm_volumes[vm] = vm.additional_volume
+      vm_volumes[vm] = vm.additional_typed_volumes(hdd_type: hdd_type).count
     end
-    return Hash[vm_volumes.sort_by { |k,v| -v }[0...n]]
+    return vm_volumes.sort_by { |k,v| -v }[0...n].to_h
   end
 
+  def self.most_added_capacity(n, hdd_type: nil)
+    # Отчет который выводит n ВМ у которых подключено 
+    # больше всего дополнительных дисков (по объему)
+    vm_volumes = {}
+    Vm.all.each do |vm|
+      vm_volumes[vm] = vm.additional_volume(hdd_type: hdd_type)
+    end
+    return vm_volumes.sort_by { |k,v| -v }[0...n].to_h
+  end
 end
 
 pp Report.most_expensive(3)
 pp Report.cheapest(3)
 pp Report.highest_volume(3)
-pp Report.most_added_capacity(3)
+pp Report.most_added_hdd(3, hdd_type: 'sas')
+pp Report.most_added_capacity(3, hdd_type: 'sas')
