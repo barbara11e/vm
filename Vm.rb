@@ -19,12 +19,12 @@ class Vm
   end
 
   def additional_volume(hdd_type: nil)
-    Volume.where(self.id, hdd_type)
+    Volume.where(self.id, hdd_type: hdd_type)
       .inject(0){|sum,x| sum + x.hdd_capacity.to_i }
   end
 
   def additional_typed_volumes(hdd_type: nil)
-    Volume.where(self.id, hdd_type)
+    Volume.where(self.id, hdd_type: hdd_type)
   end
 
   def initialize(id, cpu, ram, hdd_type, hdd_capacity)

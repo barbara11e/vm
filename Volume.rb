@@ -7,7 +7,7 @@ class Volume
     "Additional volume for ##{vm_id}: #{hdd_type}"
   end
 
-  def self.where(vm_id, hdd_type, name: "data/volumes.csv")
+  def self.where(vm_id, hdd_type: nil, name: "data/volumes.csv")
     volumes = []
     CSV.read(name).each { |volume| volumes.push new(*volume) if volume[0] == vm_id}
     volumes = volumes.select { |el| el.hdd_type == hdd_type } if hdd_type
@@ -20,5 +20,3 @@ class Volume
     self.hdd_capacity = hdd_capacity
   end
 end
-
-Volume.where(3, "sas")

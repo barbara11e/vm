@@ -1,13 +1,12 @@
 require_relative 'Vm'
 
 class Report 
-  def self.get_prices()
-    CSV.read('data/prices.csv', converters: %i[numeric]).to_h
+  def self.prices()
+    @prices ||= CSV.read('data/prices.csv', converters: %i[numeric]).to_h
   end
 
   def self.get_vm_prices
     vm_prices = {}
-    prices = get_prices
     Vm.all.each do |vm|
       vm_price = vm.cpu.to_i * prices["cpu"]
       vm_price += vm.ram.to_i * prices["ram"]
