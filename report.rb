@@ -63,8 +63,19 @@ class Report
   end
 end
 
-pp Report.most_expensive(3)
-pp Report.cheapest(3)
-pp Report.highest_volume(3)
-pp Report.most_added_hdd(3, hdd_type: 'sas')
-pp Report.most_added_capacity(3, hdd_type: 'sas')
+n = Integer(ENV["VM_NUMBER"])
+
+pp "Отчет о  #{n} самых дорогих ВМ"
+pp Report.most_expensive(n)
+
+pp "Отчет о #{n} самых дешевых ВМ"
+pp Report.cheapest(n)
+
+pp "Отчет о #{n} самых объемных ВМ по параметру type"
+pp Report.highest_volume(n)
+
+pp "Отчет о #{n} ВМ у которых подключено больше всего дополнительных дисков (по количеству)"
+pp Report.most_added_hdd(n)
+
+pp "Отчет который выводит #{n} ВМ у которых подключено больше всего дополнительных дисков (по объему)"
+pp Report.most_added_capacity(n)

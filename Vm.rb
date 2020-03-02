@@ -11,11 +11,11 @@ class Vm
   end
 
   def inspect
-    "VM##{id} - hdd:#{hdd_type}; "
+    "VM##{id}"
   end
 
   def additional_volumes
-    Volume.where vm_id: self.id
+    Volume.where self.id
   end
 
   def additional_volume(hdd_type: nil)
