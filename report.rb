@@ -63,7 +63,7 @@ class Report
   end
 end
 
-n = Integer(ENV["VM_NUMBER"])
+n = Integer(ENV.fetch('VM_NUMBER'), 5)
 
 pp "Отчет о  #{n} самых дорогих ВМ"
 pp Report.most_expensive(n)
